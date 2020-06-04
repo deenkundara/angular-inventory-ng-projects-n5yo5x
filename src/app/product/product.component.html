@@ -1,0 +1,100 @@
+<form [formGroup]="productForm">
+	<clr-wizard #productWizard [clrWizardOpen]="true" clrWizardSize="lg" (clrWizardOnCancel)="handleClose()">
+		<clr-wizard-title>{{product ? 'Edit Product':'Add New Product'}}</clr-wizard-title>
+		<clr-wizard-button [type]="'cancel'" (click)="handleClose()">Cancel</clr-wizard-button>
+		<clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+		<clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+		<clr-wizard-button [type]="'finish'" (click)="handleClose()">Finish</clr-wizard-button>
+		<clr-wizard-page>
+			<ng-template clrPageTitle>Select Device Type</ng-template>
+			<div class="clr-row devices">
+				<div class="clr-col-md-6" *ngFor="let item of deviceTypes">
+					<a href="javascript:void(0)" class="card clickable" (click)="selectDevice(item)" [ngClass]="{'active': item.icon === deviceType}">
+						<div class="card-block">
+							<p class="card-text">
+								{{item.name}}
+								<clr-icon [attr.shape]="item.icon"></clr-icon>
+							</p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</clr-wizard-page>
+		<clr-wizard-page>
+			<ng-template clrPageTitle>Basic Info</ng-template>
+			<div formGroupName="basic">
+        <pre>{{productForm.value | json}}</pre>
+        <clr-input-container>
+          <label for="name">Name</label>
+          <input type="text" clrInput formControlName="name">
+          <clr-control-error>
+            {{
+              showNameRequiredError ? 'This field is required!': "Baigan"
+            }}
+          </clr-control-error>
+
+        </clr-input-container>
+
+				<div class="clr-form-control">
+					<label for="basic" class="clr-control-label">Product Name *</label>
+            <div class="clr-control-container" [ngClass]="{'clr-error': showNameRequiredError}">
+                <div class="clr-input-wrapper">
+                    <input type="text" id="basic" placeholder="IPhone X..." class="clr-input" formControlName="name">
+                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span class="clr-subtext">{{
+                  showNameRequiredError ? 'Name is Required!': 'Name of the Product'  
+                }}</span>
+            </div>
+        </div>
+        <div class="toggle-switch">
+            <input type="checkbox" id="active" formControlName="active">
+            <label for="active">Active</label>
+        </div>
+        <div class="clr-form-control">
+            <label for="vertical-textarea-basic" class="clr-control-label">Product Description</label>
+            <div class="clr-control-container">
+                <div class="clr-textarea-wrapper">
+                    <textarea placeholder="Enter description here..." class="clr-textarea" formControlName="description"></textarea>
+                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span class="clr-subtext">Product Description will be shown on the Product</span>
+            </div>
+        </div>
+        <label class="clr-control-label">Features</label>
+        <clr-input-container formArrayName="features" *ngFor="let control of basicFeatures.controls; let i = index">
+          <input clrInput type="text" [formControl]="control" placeholder="IPhone X...">
+        </clr-input-container>
+        <button class="btn btn-primary" (click)="addFeature()">Add Feature</button>
+        <!-- <div class="clr-form-control">
+            <div class="clr-control-container" formArrayName="features" *ngFor="let control of featureForms.controls; let i = index">
+                <div class="clr-input-wrapper">
+                    <input type="text" id="basic" placeholder="IPhone X..." class="clr-input" [formControl]="control">
+                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+            </div>
+            
+
+        </div> -->
+        </div>
+
+        <ng-template clrPageButtons>
+            <clr-wizard-button [type]="'cancel'">Cancel</clr-wizard-button>
+            <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+            <clr-wizard-button [clrWizardButtonDisabled]="isBasicInvalid" [type]="'next'">Next</clr-wizard-button>
+        </ng-template>
+        
+    </clr-wizard-page>
+    
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Expiration Info</ng-template>
+        <div formGroupName="expiration">
+          <input type="date" clrDate formControlName="expirationDate">
+        </div>
+        <ng-template clrPageButtons>
+            
+            <clr-wizard-button [clrWizardButtonDisabled]="isExpirationInvalid" (click)="handleFinish()" [type]="'finish'">Finish</clr-wizard-button>
+        </ng-template>
+    </clr-wizard-page>
+    </clr-wizard>
+</form>
